@@ -62,6 +62,10 @@
                 <button id="add_3d_btn_2" class="add_btn">Punto 3D 2</button>
                 <input type="checkbox" id="chk_barr" disabled>
             </div>
+            <div class="item_capa">
+                <button id="add_3d_btn_3" class="add_btn">Punto 3D 3</button>
+                <input type="checkbox" id="chk_barr" disabled>
+            </div>
             <div>
                 <!-- <p>Mapas base</p> -->
                 <button id="btn_topo_vector" class="basemap_btn">Topo-vector</button>
@@ -253,6 +257,11 @@
             name: "Eurocopter_H125",
             styleName: "EsriRealisticTransportationStyle"
         });
+                const symbol_3d_res_3 = new WebStyleSymbol({
+  // Basketball Hoop
+  name: "Basketball_Hoop",
+  styleName: "EsriRecreationStyle"
+});
 
 
         //__________CREACIÓN DE LAYERS__________
@@ -346,6 +355,11 @@
         const add_3d_btn_2 = document.getElementById("add_3d_btn_2");
         add_3d_btn_2.onclick = () => {
             sketchVM.pointSymbol = symbol_3d_res_2
+            sketchVM.create("point", { preserveAspectRatio: true })
+        }
+        const add_3d_btn_3 = document.getElementById("add_3d_btn_3");
+        add_3d_btn_3.onclick = () => {
+            sketchVM.pointSymbol = symbol_3d_res_3
             sketchVM.create("point", { preserveAspectRatio: true })
         }
 
