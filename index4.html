@@ -4,67 +4,86 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Mapa interactivo</title>
+    <title>Mapa interactivo de mesa</title>
 
     <!-- Load the ArcGIS Maps SDK for JavaScript from CDN -->
-    <script type="module" src="https://js.arcgis.com/5.0/"></script>
+    <script type="module" src="https://js.arcgis.com/5.1/"></script>
+    <link rel="stylesheet" href="https://js.arcgis.com/5.1/esri/themes/light/main.css">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <div id="contenedor">
         <div id="panel_simbolos">
-            <div class="item_capa">
-                <button id="add_rad_btn" class="add_btn">☢Material radiactivo</button>
-                <input type="checkbox" id="chk_rad" disabled>
+            <div class="sep_item_capa">
             </div>
             <div class="item_capa">
                 <button id="add_std_btn" class="add_btn">Punto</button>
-                <input type="checkbox" id="chk_std" disabled>
             </div>
             <div class="item_capa">
                 <button id="add_line_btn" class="add_btn">Línea</button>
-                <input type="checkbox" id="chk_line" disabled>
             </div>
             <div class="item_capa">
                 <button id="add_polig_btn" class="add_btn">Polígono</button>
-                <input type="checkbox" id="chk_polig" disabled>
             </div>
             <div class="item_capa">
                 <button id="add_rect_btn" class="add_btn">Rectángulo</button>
-                <input type="checkbox" id="chk_rect" disabled>
             </div>
             <div class="item_capa">
                 <button id="add_circle_btn" class="add_btn">Círculo</button>
-                <input type="checkbox" id="chk_circle" disabled>
+            </div>
+            <div class="sep_item_capa">
             </div>
             <div class="item_capa">
-                <button id="add_bbvv_btn" class="add_btn">🚒 BBVV</button>
-                <input type="checkbox" id="chk_bbvv" disabled>
+                <button id="add_rad_btn" class="add_btn">☢Material radiactivo</button>
             </div>
             <div class="item_capa">
-                <button id="add_pol_btn" class="add_btn">👮‍♂️ Est. Policial</button>
-                <input type="checkbox" id="chk_pol" disabled>
+                <button id="add_bbvv_btn" class="add_btn">🚒 Bomberos</button>
+            </div>
+            <div class="item_capa">
+                <button id="add_pol_btn" class="add_btn">👮‍♂️Policía</button>
             </div>
             <div class="item_capa">
                 <button id="add_amb_btn" class="add_btn">🚑 Ambulancia</button>
-                <input type="checkbox" id="chk_amb" disabled>
             </div>
             <div class="item_capa">
                 <button id="add_barr_btn" class="add_btn">🚧 Barrera</button>
-                <input type="checkbox" id="chk_barr" disabled>
+            </div>
+            <div class="item_capa">
+                <button id="add_sci_pc_btn" class="add_btn"><img class="img_capa" src="images/sci_pc.PNG" />Puesto de
+                    comando</button>
+            </div>
+            <div class="item_capa">
+                <button id="add_sci_e_btn" class="add_btn"><img class="img_capa" src="images/sci_e.PNG" />Área de
+                    espera</button>
+            </div>
+            <div class="item_capa">
+                <button id="add_sci_acv_btn" class="add_btn"><img class="img_capa" src="images/sci_acv.PNG" />Área de
+                    conc. de víct.</button>
+            </div>
+            <div class="item_capa">
+                <button id="add_sci_b_btn" class="add_btn"><img class="img_capa" src="images/sci_b.PNG" />Base</button>
+            </div>
+            <div class="item_capa">
+                <button id="add_sci_c_btn" class="add_btn"><img class="img_capa"
+                        src="images/sci_c.PNG" />Campamento</button>
+            </div>
+            <div class="item_capa">
+                <button id="add_sci_h_btn" class="add_btn"><img class="img_capa"
+                        src="images/sci_h.png" />Helibase</button>
+            </div>
+            <div class="item_capa">
+                <button id="add_sci_h1_btn" class="add_btn"><img class="img_capa"
+                        src="images/sci_h1.PNG" />Helipunto</button>
             </div>
             <div class="item_capa">
                 <button id="add_3d_btn_1" class="add_btn">Punto 3D 1</button>
-                <input type="checkbox" id="chk_barr" disabled>
             </div>
             <div class="item_capa">
                 <button id="add_3d_btn_2" class="add_btn">Punto 3D 2</button>
-                <input type="checkbox" id="chk_barr" disabled>
             </div>
             <div class="item_capa">
                 <button id="add_3d_btn_3" class="add_btn">Punto 3D 3</button>
-                <input type="checkbox" id="chk_barr" disabled>
             </div>
             <div>
                 <!-- <p>Mapas base</p> -->
@@ -81,14 +100,17 @@
             </div>
         </div>
         <div id="viewDiv">
+            <arcgis-scale-bar slot="top-left" bar-style="line" unit="metric"></arcgis-scale-bar>
         </div>
     </div>
 
 
     <script type="module">
         // Load modules
-        const [SceneLayer, SceneView, Graphic, SketchViewModel, SketchTooltipOptions, SnappingControls, Map, GraphicsLayer, MapView, Expand, WebStyleSymbol, Viewpoint, CIMSymbol] =
+        const [Search, ScaleBar, SceneLayer, SceneView, Graphic, SketchViewModel, SketchTooltipOptions, SnappingControls, Map, GraphicsLayer, MapView, Expand, WebStyleSymbol, Viewpoint, CIMSymbol] =
             await $arcgis.import([
+                "@arcgis/core/widgets/Search.js",
+                "@arcgis/core/widgets/ScaleBar.js",
                 "@arcgis/core/layers/SceneLayer.js",
                 "@arcgis/core/views/SceneView.js",
                 "@arcgis/core/Graphic.js",
@@ -106,7 +128,7 @@
 
         // Map - Proyecto
         const map = new Map({
-            basemap: "streets-dark-3d",
+            basemap: "topo-vector",
             ground: "world-elevation"
         });
 
@@ -114,32 +136,29 @@
 
         //_Parámetros de la vista
         let vista_dimension = "2D"          //...vista inicial
-        let lat = -34.60371296702538;
-        let lon = -58.38163775912445;
+        let lat = -38.05594646879531;
+        let lon = -65.40820327886374;
         let viewpoint = new Viewpoint({     //...útil al alternar entre 2D y 3D
-            scale: 50000,
+            scale: 18000000,
             targetGeometry: {
                 type: "point",
                 x: lon,
                 y: lat
             }
         });
-        //_Vista 2D
-        let view = new MapView({
-            map: map,
-            container: "viewDiv",
-            viewpoint: viewpoint,
-        });
 
-        view.when(function () {     //...función a ejecutarse cuando se carga la vista
-            view.goTo({
-                viewpoint: viewpoint
-            });
-            console.log(view)
-            // view.ui.remove("zoom")
-        }).catch(function (e) {
-            console.log("Error: ", e)
-        })
+
+        //__________CREACIÓN DE WIDGETS__________
+        let scaleBar = null;
+        let searchWidget = null;
+        function agregarWidgets(vista) {
+            if (scaleBar) { scaleBar.destroy() }
+            if (searchWidget) { searchWidget.destroy() }
+            scaleBar = new ScaleBar({ view: vista });
+            searchWidget = new Search({ view: vista });
+            vista.ui.add(scaleBar, { position: "bottom-left" })
+            vista.ui.add(searchWidget, { position: "top-right" });
+        };
 
 
 
@@ -200,7 +219,7 @@
                 // Replace the empty object below with the copied CIM symbol JSON
                 // Police%20Station_1.json
                 // --------------------------------------------------------------------
-                symbol: {"type":"CIMPointSymbol","symbolLayers":[{"type":"CIMVectorMarker","enable":true,"colorLocked":true,"anchorPointUnits":"Relative","dominantSizeAxis3D":"Y","size":18,"billboardMode3D":"FaceNearPlane","frame":{"xmin":0.0,"ymin":0.0,"xmax":21.0,"ymax":21.0},"markerGraphics":[{"type":"CIMMarkerGraphic","geometry":{"rings":[[[16.06,12.94],[16.13,12.1],[16.44,10.97],[16.79,9.83],[16.94,9.06],[16.9,8.41],[16.76,7.8],[16.52,7.23],[16.19,6.69],[15.42,5.9],[14.29,5.01],[13.17,4.5],[12.5,4.24],[12.06,4.05],[11.73,3.9],[11.17,3.64],[10.75,3.35],[10.46,3.0],[10.19,3.33],[9.77,3.64],[9.33,3.85],[8.9,4.05],[7.94,4.4],[6.65,5.01],[5.49,5.91],[4.73,6.71],[4.17,7.82],[4.0,9.06],[4.14,9.86],[4.48,11.04],[4.79,12.12],[4.88,12.94],[4.62,14.41],[4.02,15.81],[6.1,17.92],[7.11,17.33],[8.25,17.06],[9.37,17.13],[10.46,17.51],[11.52,17.12],[12.67,17.06],[13.28,17.15],[13.86,17.33],[14.4,17.62],[14.92,18.0],[17.0,15.9],[16.36,14.49],[16.06,12.94]],[[8.0,14.0],[8.0,7.0],[9.0,7.0],[9.0,10.0],[12.0,10.0],[12.48,10.12],[12.8,10.47],[12.96,11.06],[13.0,12.0],[12.96,12.94],[12.8,13.53],[12.48,13.88],[12.0,14.0],[8.0,14.0]],[[9.0,11.0],[9.0,13.0],[11.5,13.0],[11.8,12.97],[11.94,12.86],[12.0,12.0],[11.94,11.14],[11.8,11.03],[11.5,11.0],[9.0,11.0]]]},"symbol":{"type":"CIMPolygonSymbol","symbolLayers":[{"type":"CIMSolidStroke","enable":true,"capStyle":"Round","joinStyle":"Round","lineStyle3D":"Strip","miterLimit":10,"width":0,"height3D":1,"anchor3D":"Center","color":[30,30,30,255]},{"type":"CIMSolidFill","enable":true,"color":[255,255,255,255]}],"angleAlignment":"Map"}}],"scaleSymbolsProportionally":true,"respectFrame":true},{"type":"CIMVectorMarker","enable":true,"anchorPointUnits":"Relative","dominantSizeAxis3D":"Y","size":18,"billboardMode3D":"FaceNearPlane","frame":{"xmin":-5.0,"ymin":-5.0,"xmax":5.0,"ymax":5.0},"markerGraphics":[{"type":"CIMMarkerGraphic","geometry":{"rings":[[[0.0,5.0],[0.87,4.92],[1.71,4.7],[2.5,4.33],[3.21,3.83],[3.83,3.21],[4.33,2.5],[4.7,1.71],[4.92,0.87],[5.0,0.0],[4.92,-0.87],[4.7,-1.71],[4.33,-2.5],[3.83,-3.21],[3.21,-3.83],[2.5,-4.33],[1.71,-4.7],[0.87,-4.92],[0.0,-5.0],[-0.87,-4.92],[-1.71,-4.7],[-2.5,-4.33],[-3.21,-3.83],[-3.83,-3.21],[-4.33,-2.5],[-4.7,-1.71],[-4.92,-0.87],[-5.0,-0.0],[-4.92,0.87],[-4.7,1.71],[-4.33,2.5],[-3.83,3.21],[-3.21,3.83],[-2.5,4.33],[-1.71,4.7],[-0.87,4.92],[0.0,5.0]]]},"symbol":{"type":"CIMPolygonSymbol","symbolLayers":[{"type":"CIMSolidStroke","effects":[{"type":"CIMGeometricEffectOffset","method":"Square","offset":-0.25,"option":"Fast"}],"enable":true,"colorLocked":true,"capStyle":"Square","joinStyle":"Miter","lineStyle3D":"Strip","miterLimit":10,"width":1,"height3D":1,"anchor3D":"Center","color":[0,0,0,150]},{"type":"CIMSolidFill","enable":true,"color":[0,122,194,255]}],"angleAlignment":"Map"}}],"scaleSymbolsProportionally":true,"respectFrame":true}],"haloSize":1,"scaleX":1,"angleAlignment":"Display"},
+                symbol: { "type": "CIMPointSymbol", "symbolLayers": [{ "type": "CIMVectorMarker", "enable": true, "colorLocked": true, "anchorPointUnits": "Relative", "dominantSizeAxis3D": "Y", "size": 18, "billboardMode3D": "FaceNearPlane", "frame": { "xmin": 0.0, "ymin": 0.0, "xmax": 21.0, "ymax": 21.0 }, "markerGraphics": [{ "type": "CIMMarkerGraphic", "geometry": { "rings": [[[16.06, 12.94], [16.13, 12.1], [16.44, 10.97], [16.79, 9.83], [16.94, 9.06], [16.9, 8.41], [16.76, 7.8], [16.52, 7.23], [16.19, 6.69], [15.42, 5.9], [14.29, 5.01], [13.17, 4.5], [12.5, 4.24], [12.06, 4.05], [11.73, 3.9], [11.17, 3.64], [10.75, 3.35], [10.46, 3.0], [10.19, 3.33], [9.77, 3.64], [9.33, 3.85], [8.9, 4.05], [7.94, 4.4], [6.65, 5.01], [5.49, 5.91], [4.73, 6.71], [4.17, 7.82], [4.0, 9.06], [4.14, 9.86], [4.48, 11.04], [4.79, 12.12], [4.88, 12.94], [4.62, 14.41], [4.02, 15.81], [6.1, 17.92], [7.11, 17.33], [8.25, 17.06], [9.37, 17.13], [10.46, 17.51], [11.52, 17.12], [12.67, 17.06], [13.28, 17.15], [13.86, 17.33], [14.4, 17.62], [14.92, 18.0], [17.0, 15.9], [16.36, 14.49], [16.06, 12.94]], [[8.0, 14.0], [8.0, 7.0], [9.0, 7.0], [9.0, 10.0], [12.0, 10.0], [12.48, 10.12], [12.8, 10.47], [12.96, 11.06], [13.0, 12.0], [12.96, 12.94], [12.8, 13.53], [12.48, 13.88], [12.0, 14.0], [8.0, 14.0]], [[9.0, 11.0], [9.0, 13.0], [11.5, 13.0], [11.8, 12.97], [11.94, 12.86], [12.0, 12.0], [11.94, 11.14], [11.8, 11.03], [11.5, 11.0], [9.0, 11.0]]] }, "symbol": { "type": "CIMPolygonSymbol", "symbolLayers": [{ "type": "CIMSolidStroke", "enable": true, "capStyle": "Round", "joinStyle": "Round", "lineStyle3D": "Strip", "miterLimit": 10, "width": 0, "height3D": 1, "anchor3D": "Center", "color": [30, 30, 30, 255] }, { "type": "CIMSolidFill", "enable": true, "color": [255, 255, 255, 255] }], "angleAlignment": "Map" } }], "scaleSymbolsProportionally": true, "respectFrame": true }, { "type": "CIMVectorMarker", "enable": true, "anchorPointUnits": "Relative", "dominantSizeAxis3D": "Y", "size": 18, "billboardMode3D": "FaceNearPlane", "frame": { "xmin": -5.0, "ymin": -5.0, "xmax": 5.0, "ymax": 5.0 }, "markerGraphics": [{ "type": "CIMMarkerGraphic", "geometry": { "rings": [[[0.0, 5.0], [0.87, 4.92], [1.71, 4.7], [2.5, 4.33], [3.21, 3.83], [3.83, 3.21], [4.33, 2.5], [4.7, 1.71], [4.92, 0.87], [5.0, 0.0], [4.92, -0.87], [4.7, -1.71], [4.33, -2.5], [3.83, -3.21], [3.21, -3.83], [2.5, -4.33], [1.71, -4.7], [0.87, -4.92], [0.0, -5.0], [-0.87, -4.92], [-1.71, -4.7], [-2.5, -4.33], [-3.21, -3.83], [-3.83, -3.21], [-4.33, -2.5], [-4.7, -1.71], [-4.92, -0.87], [-5.0, -0.0], [-4.92, 0.87], [-4.7, 1.71], [-4.33, 2.5], [-3.83, 3.21], [-3.21, 3.83], [-2.5, 4.33], [-1.71, 4.7], [-0.87, 4.92], [0.0, 5.0]]] }, "symbol": { "type": "CIMPolygonSymbol", "symbolLayers": [{ "type": "CIMSolidStroke", "effects": [{ "type": "CIMGeometricEffectOffset", "method": "Square", "offset": -0.25, "option": "Fast" }], "enable": true, "colorLocked": true, "capStyle": "Square", "joinStyle": "Miter", "lineStyle3D": "Strip", "miterLimit": 10, "width": 1, "height3D": 1, "anchor3D": "Center", "color": [0, 0, 0, 150] }, { "type": "CIMSolidFill", "enable": true, "color": [0, 122, 194, 255] }], "angleAlignment": "Map" } }], "scaleSymbolsProportionally": true, "respectFrame": true }], "haloSize": 1, "scaleX": 1, "angleAlignment": "Display" },
             }
         });
         const amb_symbol = new CIMSymbol({
@@ -257,43 +276,71 @@
             name: "Eurocopter_H125",
             styleName: "EsriRealisticTransportationStyle"
         });
-                const symbol_3d_res_3 = new WebStyleSymbol({
-  // Basketball Hoop
-  name: "Basketball_Hoop",
-  styleName: "EsriRecreationStyle"
-});
+        const symbol_3d_res_3 = new WebStyleSymbol({
+            name: "Ambulance",
+            styleName: "EsriRealisticTransportationStyle"
+        });
+
 
 
         //__________CREACIÓN DE LAYERS__________
-        const layer_figuras = new GraphicsLayer()
-        const layer_recursos = new GraphicsLayer()
-        map.addMany([layer_figuras, layer_recursos])
+        const layer_puntos = new GraphicsLayer()
+        const layer_lineas = new GraphicsLayer()
+        const layer_poligonos = new GraphicsLayer()
+
         const layer_buildings = new SceneLayer({        //...Solamente para la vista 3D (SceneView)
             url: "https://basemaps3d.arcgis.com/arcgis/rest/services/Esri3D_Buildings_v1/SceneServer",
             renderer: symbol_buildings
         });
         layer_buildings.opacity = 0.5
 
+        //_Vista 2D
+        let view = new MapView({
+            map: map,
+            container: "viewDiv",
+            viewpoint: viewpoint,
+        });
+        let sketchVM = null
+        view.when(function () {     //...función a ejecutarse cuando se carga la vista
+            map.addMany([layer_poligonos, layer_lineas, layer_puntos])    //...El orden importa
 
-
-        //__________CREACIÓN DE SKETCH (HERRAMIENTA DE DIBUJO)__________
-        const sketchVM = new SketchViewModel({
-            view: view,
-            layer: layer_figuras,
-            snappingOptions: {
-                featureEnabled: true,
-                enabled: true,
-                selfEnabled: true,
-                attributeRulesEnabled: true
-            },
-            tooltipOptions: {
-                enabled: true
-            },
-            defaultUpdateOptions: {
-                enableRotation: true,
-                enableScaling: true,
-                tool: "transform"
-            }
+            view.goTo({
+                viewpoint: viewpoint
+            });
+            console.log("Vista 2D creada", view)
+            //__________CREACIÓN DE SKETCH (HERRAMIENTA DE DIBUJO)__________
+            sketchVM = new SketchViewModel({
+                view: view,
+                layer: layer_puntos,
+                snappingOptions: {
+                    featureEnabled: true,
+                    enabled: true,
+                    selfEnabled: true,
+                    attributeRulesEnabled: true
+                },
+                tooltipOptions: {
+                    enabled: true
+                },
+                defaultUpdateOptions: {
+                    enableRotation: true,
+                    enableScaling: true,
+                    tool: "transform"
+                }
+            })
+            sketchVM.on("create", (ev) => {
+                console.log("create event:", ev.state, ev.graphic)
+                if (ev.state === "complete") {
+                    console.log("gráfico completado:", ev.graphic)
+                    console.log("geometría:", ev.graphic?.geometry)
+                    console.log("símbolo:", ev.graphic?.symbol)
+                    console.log("layer tiene el gráfico:", layer_puntos.graphics.length)
+                }
+            })
+            console.log("sketch creado", sketchVM)
+            agregarWidgets(view);
+            registrarClickListener();
+        }).catch(function (e) {
+            console.log("Error: ", e)
         })
 
 
@@ -302,66 +349,99 @@
         //_Botones para crear elementos
         const add_rad_btn = document.getElementById("add_rad_btn");
         add_rad_btn.onclick = () => {
-            console.log("Símbolo: ", rad_symbol)
-            sketchVM.pointSymbol = rad_symbol
-            sketchVM.create("point")
+            console.log("viewDiv rect:", document.getElementById("viewDiv").getBoundingClientRect())
+            console.log("view size:", view.width, view.height)
+            console.log("Símbolo: ", rad_symbol);
+            sketchVM.cancel();
+            sketchVM.pointSymbol = rad_symbol;
+            sketchVM.layer = layer_puntos;
+            sketchVM.create("point");
+            console.log("Salida 1", document.querySelector(".esri-view-root").style.cssText);
+            console.log("Salida 2", document.querySelector("canvas").getBoundingClientRect());
+
         }
         const add_std_btn = document.getElementById("add_std_btn");
         add_std_btn.onclick = () => {
+            sketchVM.cancel();
             sketchVM.pointSymbol = std_symbol
+            sketchVM.layer = layer_puntos
             sketchVM.create("point")
         }
         const add_bbvv_btn = document.getElementById("add_bbvv_btn");
         add_bbvv_btn.onclick = () => {
+            sketchVM.cancel();
             sketchVM.pointSymbol = bbvv_symbol
+            sketchVM.layer = layer_puntos
             sketchVM.create("point")
         }
         const add_pol_btn = document.getElementById("add_pol_btn");
         add_pol_btn.onclick = () => {
+            sketchVM.cancel();
             sketchVM.pointSymbol = pol_symbol
+            sketchVM.layer = layer_puntos
             sketchVM.create("point")
         }
         const add_amb_btn = document.getElementById("add_amb_btn");
         add_amb_btn.onclick = () => {
+            sketchVM.cancel();
             sketchVM.pointSymbol = amb_symbol
+            sketchVM.layer = layer_puntos
             sketchVM.create("point")
         }
         const add_barr_btn = document.getElementById("add_barr_btn");
         add_barr_btn.onclick = () => {
+            sketchVM.cancel();
             sketchVM.pointSymbol = barrera_symbol
+            sketchVM.layer = layer_puntos
             sketchVM.create("point")
         }
         const add_line_btn = document.getElementById("add_line_btn");
         add_line_btn.onclick = () => {
+            sketchVM.cancel();
+            sketchVM.layer = layer_lineas
             sketchVM.create("polyline")
         }
         const add_polig_btn = document.getElementById("add_polig_btn");
         add_polig_btn.onclick = () => {
+            sketchVM.cancel();
+            sketchVM.layer = layer_poligonos
             sketchVM.create("polygon")
         }
         const add_rect_btn = document.getElementById("add_rect_btn");
         add_rect_btn.onclick = () => {
+            sketchVM.cancel();
+            sketchVM.layer = layer_poligonos
             sketchVM.create("rectangle")
         }
         const add_circle_btn = document.getElementById("add_circle_btn");
         add_circle_btn.onclick = () => {
+            sketchVM.cancel();
+            sketchVM.layer = layer_poligonos
             sketchVM.create("circle", { preserveAspectRatio: true })
         }
         const add_3d_btn_1 = document.getElementById("add_3d_btn_1");
         add_3d_btn_1.onclick = () => {
+            sketchVM.cancel();
             sketchVM.pointSymbol = symbol_3d_res_1
+            sketchVM.layer = layer_puntos
             sketchVM.create("point", { preserveAspectRatio: true })
         }
         const add_3d_btn_2 = document.getElementById("add_3d_btn_2");
         add_3d_btn_2.onclick = () => {
+            sketchVM.cancel();
             sketchVM.pointSymbol = symbol_3d_res_2
+            sketchVM.layer = layer_puntos
             sketchVM.create("point", { preserveAspectRatio: true })
         }
         const add_3d_btn_3 = document.getElementById("add_3d_btn_3");
         add_3d_btn_3.onclick = () => {
+            sketchVM.cancel();
             sketchVM.pointSymbol = symbol_3d_res_3
+            sketchVM.layer = layer_puntos
             sketchVM.create("point", { preserveAspectRatio: true })
         }
+
+
 
         //_Botones de mapas base
         const btn_topo_vector = document.getElementById("btn_topo_vector").addEventListener("click", (e) => { map.basemap = "topo-vector" })
@@ -385,13 +465,20 @@
                     container: "viewDiv",
                     viewpoint: viewpoint
                 })
-                sketchVM.view = view;
-                if (!map.layers.includes(layer_buildings)) {
-                    map.add(layer_buildings)
-                    console.log("Scene layer de edificios agregada")
-                }
-                map.add(layer_buildings)
-                console.log("Vista alternada a 3D");
+                view.when(() => {       //...se ejecuta cuando se crea la view
+                    sketchVM.view = view;
+                    if (!map.layers.includes(layer_buildings)) {
+                        map.add(layer_buildings)
+                        console.log("Scene layer de edificios agregada")
+                    }
+                    let searchWidget = new Search({
+                        view: view
+                    });
+                    view.ui.add(searchWidget, {
+                        position: "top-right"
+                    });
+                    console.log("Vista alternada a 3D");
+                })
             }
         })
         const btn_2d = document.getElementById("btn_2d").addEventListener("click", (e) => {
@@ -403,6 +490,7 @@
                 }
                 //...guardo propiedades antes de destruir la view
                 viewpoint = view.viewpoint
+                //..desligo objetos antes de destruir la view
                 view.map = null;
                 sketchVM.view = null;
                 view.destroy()
@@ -411,26 +499,33 @@
                     container: "viewDiv",
                     viewpoint: viewpoint
                 })
-                sketchVM.view = view;
-                console.log("Vista alternada a 2D")
+                view.when(() => {
+                    sketchVM.view = view;
+                    agregarWidgets(view)
+                    console.log("Vista alternada a 2D")
+                })
+
             }
         })
 
 
-        const overlay = document.querySelector(".esri-overlay-surface");
 
-        overlay.style.position = "absolute";
-        //__________EVENTOS__________
-        sketchVM.on("create", (ev) => {
-            // console.log("sketchVM.on(create)", ev)
-            if (ev.state == "active") {
-                console.log("------------------------")
-                console.log(
-                    document.getElementById("viewDiv")
-                        .getBoundingClientRect()
-                );
-            }
-        })
+        //__________FUNCIONALIDADES PARCHES__________
+        function registrarClickListener() {
+            view.on("click", async (ev) => {
+                const resultado = await view.hitTest(ev)
+                const capa0 = resultado?.results[0]
+                console.log("CAPA 0", capa0);
+                if (capa0.layer.type !== "vector-tile") {
+                    const g = capa0?.graphic
+                    if (!g) { return }
+                    if (sketchVM.updateGraphics.length > 0) { return }
+                    console.log(resultado)
+                    sketchVM.layer = g.layer
+                    sketchVM.update(g)
+                }
+            })
+        }
 
     </script>
 </body>
