@@ -24,7 +24,7 @@
             "type": "CIMTextSymbol",
             "fontFamilyName": "Arial",
             "fontStyleName": "Bold",
-            "height": 10,
+            "height": 8,
             "horizontalAlignment": "Center",
             "offsetX": 0,
             "offsetY": 5.5,
@@ -62,7 +62,7 @@
       "enable": true,
       "anchorPointUnits": "Relative",
       "dominantSizeAxis3D": "Y",
-      "size": 40,
+      "size": 20,
       "billboardMode3D": "FaceNearPlane",
       "frame": {
         "xmin": 0,
@@ -109,7 +109,7 @@
                 "joinStyle": "Round",
                 "lineStyle3D": "Strip",
                 "miterLimit": 10,
-                "width": 0,
+                "width": 1,
                 "color": [
                   0,
                   0,
@@ -132,8 +132,7 @@
         }
       ],
       "scaleSymbolsProportionally": true,
-      "respectFrame": true,
-      "colorLocked": true
+      "respectFrame": true
     }
   ],
   "animations": []
