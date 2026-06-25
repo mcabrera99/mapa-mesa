@@ -280,7 +280,150 @@
             name: "Ambulance",
             styleName: "EsriRealisticTransportationStyle"
         });
-
+        const sci_pc_symbol = new CIMSymbol({
+            data: {
+                type: "",
+                symbol: {
+                    "type": "CIMPointSymbol",
+                    "symbolLayers": [
+                        {
+                            "type": "CIMVectorMarker",
+                            "enable": true,
+                            "size": 19,
+                            "colorLocked": false,
+                            "anchorPointUnits": "Relative",
+                            "frame": {
+                                "xmin": -5,
+                                "ymin": -5,
+                                "xmax": 5,
+                                "ymax": 5
+                            },
+                            "markerGraphics": [
+                                {
+                                    "type": "CIMMarkerGraphic",
+                                    "geometry": {
+                                        "x": 0,
+                                        "y": 0
+                                    },
+                                    "symbol": {
+                                        "type": "CIMTextSymbol",
+                                        "fontFamilyName": "Arial",
+                                        "fontStyleName": "Bold",
+                                        "height": 8,
+                                        "horizontalAlignment": "Center",
+                                        "offsetX": 0,
+                                        "offsetY": 5.5,
+                                        "symbol": {
+                                            "type": "CIMPolygonSymbol",
+                                            "symbolLayers": [
+                                                {
+                                                    "type": "CIMSolidFill",
+                                                    "enable": true,
+                                                    "color": [
+                                                        0,
+                                                        0,
+                                                        0,
+                                                        255
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        "verticalAlignment": "Center"
+                                    },
+                                    "textString": "PC"
+                                }
+                            ],
+                            "scaleSymbolsProportionally": true,
+                            "respectFrame": true,
+                            "anchorPoint": {
+                                "x": 0,
+                                "y": 0.5
+                            },
+                            "animations": [],
+                            "offsetX": 0
+                        },
+                        {
+                            "type": "CIMVectorMarker",
+                            "enable": true,
+                            "anchorPointUnits": "Relative",
+                            "dominantSizeAxis3D": "Y",
+                            "size": 20,
+                            "billboardMode3D": "FaceNearPlane",
+                            "frame": {
+                                "xmin": 0,
+                                "ymin": 0,
+                                "xmax": 28,
+                                "ymax": 17
+                            },
+                            "markerGraphics": [
+                                {
+                                    "type": "CIMMarkerGraphic",
+                                    "geometry": {
+                                        "rings": [
+                                            [
+                                                [
+                                                    0,
+                                                    17
+                                                ],
+                                                [
+                                                    28,
+                                                    17
+                                                ],
+                                                [
+                                                    28,
+                                                    0
+                                                ],
+                                                [
+                                                    0,
+                                                    0
+                                                ],
+                                                [
+                                                    0,
+                                                    17
+                                                ]
+                                            ]
+                                        ]
+                                    },
+                                    "symbol": {
+                                        "type": "CIMPolygonSymbol",
+                                        "symbolLayers": [
+                                            {
+                                                "type": "CIMSolidStroke",
+                                                "enable": true,
+                                                "capStyle": "Round",
+                                                "joinStyle": "Round",
+                                                "lineStyle3D": "Strip",
+                                                "miterLimit": 10,
+                                                "width": 1,
+                                                "color": [
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    255
+                                                ]
+                                            },
+                                            {
+                                                "type": "CIMSolidFill",
+                                                "enable": true,
+                                                "color": [
+                                                    255,
+                                                    127,
+                                                    37,
+                                                    255
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            ],
+                            "scaleSymbolsProportionally": true,
+                            "respectFrame": true
+                        }
+                    ],
+                    "animations": []
+                }
+            }
+        })
 
 
         //__________CREACIÓN DE LAYERS__________
@@ -440,92 +583,98 @@
             sketchVM.layer = layer_puntos
             sketchVM.create("point", { preserveAspectRatio: true })
         }
+        const add_sci_pc_btn = document.getElementById("add_sci_pc_btn");
+        add_sci_pc_btn.onclick = () => {
+            sketchVM.cancel();
+            sketchVM.pointSymbol = sci_pc_symbol
+            sketchVM.layer = layer_puntos
+            sketchVM.create("point")
+        }
 
 
+            //_Botones de mapas base
+            const btn_topo_vector = document.getElementById("btn_topo_vector").addEventListener("click", (e) => { map.basemap = "topo-vector" })
+            const btn_satellite = document.getElementById("btn_satellite").addEventListener("click", (e) => { map.basemap = "satellite" })
+            const btn_hybrid = document.getElementById("btn_hybrid").addEventListener("click", (e) => { map.basemap = "hybrid" })
 
-        //_Botones de mapas base
-        const btn_topo_vector = document.getElementById("btn_topo_vector").addEventListener("click", (e) => { map.basemap = "topo-vector" })
-        const btn_satellite = document.getElementById("btn_satellite").addEventListener("click", (e) => { map.basemap = "satellite" })
-        const btn_hybrid = document.getElementById("btn_hybrid").addEventListener("click", (e) => { map.basemap = "hybrid" })
+            //_Botón para restablecer norte
+            const btn_nortificar = document.getElementById("btn_nortificar").addEventListener("click", (e) => { view.goTo({ rotation: 0 }) })
 
-        //_Botón para restablecer norte
-        const btn_nortificar = document.getElementById("btn_nortificar").addEventListener("click", (e) => { view.goTo({ rotation: 0 }) })
-
-        //_Botones de vistas 2D y 3D
-        const btn_3d = document.getElementById("btn_3d").addEventListener("click", (e) => {
-            if (vista_dimension == "2D") {
-                vista_dimension = "3D"
-                //...guardo propiedades antes de destruir la view
-                viewpoint = view.viewpoint
-                view.map = null
-                sketchVM.view = null
-                view.destroy()
-                view = new SceneView({
-                    map: map,
-                    container: "viewDiv",
-                    viewpoint: viewpoint
-                })
-                view.when(() => {       //...se ejecuta cuando se crea la view
-                    sketchVM.view = view;
-                    if (!map.layers.includes(layer_buildings)) {
-                        map.add(layer_buildings)
-                        console.log("Scene layer de edificios agregada")
-                    }
-                    let searchWidget = new Search({
-                        view: view
-                    });
-                    view.ui.add(searchWidget, {
-                        position: "top-right"
-                    });
-                    console.log("Vista alternada a 3D");
-                })
-            }
-        })
-        const btn_2d = document.getElementById("btn_2d").addEventListener("click", (e) => {
-            if (vista_dimension == "3D") {
-                vista_dimension = "2D"
-                if (map.layers.includes(layer_buildings)) {
-                    map.remove(layer_buildings)
-                    console.log("Scene layer de edificios eliminada")
-                }
-                //...guardo propiedades antes de destruir la view
-                viewpoint = view.viewpoint
-                //..desligo objetos antes de destruir la view
-                view.map = null;
-                sketchVM.view = null;
-                view.destroy()
-                view = new MapView({
-                    map: map,
-                    container: "viewDiv",
-                    viewpoint: viewpoint
-                })
-                view.when(() => {
-                    sketchVM.view = view;
-                    agregarWidgets(view)
-                    console.log("Vista alternada a 2D")
-                })
-
-            }
-        })
-
-
-
-        //__________FUNCIONALIDADES PARCHES__________
-        function registrarClickListener() {
-            view.on("click", async (ev) => {
-                const resultado = await view.hitTest(ev)
-                const capa0 = resultado?.results[0]
-                console.log("CAPA 0", capa0);
-                if (capa0.layer.type !== "vector-tile") {
-                    const g = capa0?.graphic
-                    if (!g) { return }
-                    if (sketchVM.updateGraphics.length > 0) { return }
-                    console.log(resultado)
-                    sketchVM.layer = g.layer
-                    sketchVM.update(g)
+            //_Botones de vistas 2D y 3D
+            const btn_3d = document.getElementById("btn_3d").addEventListener("click", (e) => {
+                if (vista_dimension == "2D") {
+                    vista_dimension = "3D"
+                    //...guardo propiedades antes de destruir la view
+                    viewpoint = view.viewpoint
+                    view.map = null
+                    sketchVM.view = null
+                    view.destroy()
+                    view = new SceneView({
+                        map: map,
+                        container: "viewDiv",
+                        viewpoint: viewpoint
+                    })
+                    view.when(() => {       //...se ejecuta cuando se crea la view
+                        sketchVM.view = view;
+                        if (!map.layers.includes(layer_buildings)) {
+                            map.add(layer_buildings)
+                            console.log("Scene layer de edificios agregada")
+                        }
+                        let searchWidget = new Search({
+                            view: view
+                        });
+                        view.ui.add(searchWidget, {
+                            position: "top-right"
+                        });
+                        console.log("Vista alternada a 3D");
+                    })
                 }
             })
-        }
+            const btn_2d = document.getElementById("btn_2d").addEventListener("click", (e) => {
+                if (vista_dimension == "3D") {
+                    vista_dimension = "2D"
+                    if (map.layers.includes(layer_buildings)) {
+                        map.remove(layer_buildings)
+                        console.log("Scene layer de edificios eliminada")
+                    }
+                    //...guardo propiedades antes de destruir la view
+                    viewpoint = view.viewpoint
+                    //..desligo objetos antes de destruir la view
+                    view.map = null;
+                    sketchVM.view = null;
+                    view.destroy()
+                    view = new MapView({
+                        map: map,
+                        container: "viewDiv",
+                        viewpoint: viewpoint
+                    })
+                    view.when(() => {
+                        sketchVM.view = view;
+                        agregarWidgets(view)
+                        console.log("Vista alternada a 2D")
+                    })
+
+                }
+            })
+
+
+
+            //__________FUNCIONALIDADES PARCHES__________
+            function registrarClickListener() {
+                view.on("click", async (ev) => {
+                    const resultado = await view.hitTest(ev)
+                    const capa0 = resultado?.results[0]
+                    console.log("CAPA 0", capa0);
+                    if (capa0.layer.type !== "vector-tile") {
+                        const g = capa0?.graphic
+                        if (!g) { return }
+                        if (sketchVM.updateGraphics.length > 0) { return }
+                        console.log(resultado)
+                        sketchVM.layer = g.layer
+                        sketchVM.update(g)
+                    }
+                })
+            }
 
     </script>
 </body>
