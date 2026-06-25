@@ -45,7 +45,7 @@
             },
             "verticalAlignment": "Center"
           },
-          "textString": "E"
+          "textString": "B"
         }
       ],
       "scaleSymbolsProportionally": true,
