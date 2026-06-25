@@ -24,7 +24,7 @@
             "type": "CIMTextSymbol",
             "fontFamilyName": "Arial",
             "fontStyleName": "Bold",
-            "height": 13,
+            "height": 10,
             "horizontalAlignment": "Center",
             "offsetX": 0,
             "offsetY": 5.5,
