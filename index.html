@@ -136,8 +136,9 @@
 
     <script type="module">
         // Load modules
-        const [Search, ScaleBar, SceneLayer, SceneView, Graphic, SketchViewModel, SketchTooltipOptions, SnappingControls, Map, GraphicsLayer, MapView, Expand, WebStyleSymbol, Viewpoint, CIMSymbol] =
+        const [Compass, Search, ScaleBar, SceneLayer, SceneView, Graphic, SketchViewModel, SketchTooltipOptions, SnappingControls, Map, GraphicsLayer, MapView, Expand, WebStyleSymbol, Viewpoint, CIMSymbol] =
             await $arcgis.import([
+                "@arcgis/core/widgets/Compass.js",
                 "@arcgis/core/widgets/Search.js",
                 "@arcgis/core/widgets/ScaleBar.js",
                 "@arcgis/core/layers/SceneLayer.js",
@@ -182,13 +183,20 @@
         //__________CREACIÓN DE WIDGETS__________
         let scaleBar = null;
         let searchWidget = null;
+        let compass = null;
         function agregarWidgets(vista) {
             if (scaleBar) { scaleBar.destroy() }
             if (searchWidget) { searchWidget.destroy() }
+            if (compass) { compass.destroy() }
+
             scaleBar = new ScaleBar({ view: vista });
             searchWidget = new Search({ view: vista });
-            vista.ui.add(scaleBar, { position: "bottom-left" })
+            compass = new Compass({ view: vista });
             vista.ui.add(searchWidget, { position: "top-right" });
+            if (vista instanceof MapView) {
+                vista.ui.add(scaleBar, { position: "bottom-left" });
+                vista.ui.add(compass, { position: "top-left" });
+            }
         };
 
 
